@@ -31,15 +31,13 @@ public interface DishesAPI {
     ResponseEntity<List<ListDishesDTO>> listDishesRestaurant(
             @RequestParam(required = true) Integer restaurantId,
             Pageable pageable
-    );
+    ) throws RestException;
 
     @GetMapping("/owner")
     ResponseEntity<List<ListDishesDTO>>  listDishesOwner(
             Pageable pageable
-    );
+    ) throws RestException;
 
     @GetMapping("/categories")
-    ResponseEntity<List<CategoryInfoDTO>> listCategoryDishes(
-            Pageable pageable
-    );
+    ResponseEntity<List<CategoryInfoDTO>> listCategoryDishes() throws RestException;
 }

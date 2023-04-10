@@ -9,7 +9,10 @@ public enum RestExceptionE {
     ERROR_OWNER_NOT_RESTAURANT(1003, HttpStatus.BAD_REQUEST, "Onwer.not.restaurant"),
     ERROR_RESTAURANT_ALREADY_EXIST(1004, HttpStatus.BAD_REQUEST, "Restaurant.already.exist"),
     ERROR_OWNER_HAS_RESTAURANT(1005, HttpStatus.BAD_REQUEST, "Owner.Has.Restaurant"),
-    ERROR_RESTAURANT_NOT_EXIST(1005, HttpStatus.BAD_REQUEST, "Restaurant.not.exist"),
+    ERROR_RESTAURANT_NOT_EXIST(1006, HttpStatus.BAD_REQUEST, "Restaurant.not.exist"),
+    ERROR_DISH_EXIST(1007, HttpStatus.BAD_REQUEST, "Dish.already.exist"),
+    ERROR_DISH_NOT_EXIST(1008, HttpStatus.BAD_REQUEST, "Dish.not.exist"),
+    ERROR_CATEGORY_NOT_EXIST(1009, HttpStatus.BAD_REQUEST, "Category.not.exist"),
     UNAUTHORIZED(4001, HttpStatus.UNAUTHORIZED, "User.unauthorized"),
     ;
 

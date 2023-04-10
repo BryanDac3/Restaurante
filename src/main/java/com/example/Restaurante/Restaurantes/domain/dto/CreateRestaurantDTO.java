@@ -3,6 +3,7 @@ package com.example.Restaurante.Restaurantes.domain.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
@@ -12,22 +13,22 @@ import java.io.Serializable;
 public class CreateRestaurantDTO implements Serializable {
     private static final long serialVersionUID = 1723377081889371999L;
 
-    @NotNull
+    @NotBlank
     @Pattern(regexp = "(?!^\\d+$)^.+$")
     private String name;
 
-    @NotNull
+    @NotBlank
     @Pattern(regexp = "[0-9]+$")
     private String restaurantNIT;
 
-    @NotNull
+    @NotBlank
     private String direction;
 
-    @NotNull
+    @NotBlank
     @Pattern(regexp = "(\\+[0-9]{2})+[0-9]{10}$")
     private String contactNumber;
 
-    @NotNull
+    @NotBlank
     private String urlLogo;
 
     private String description;

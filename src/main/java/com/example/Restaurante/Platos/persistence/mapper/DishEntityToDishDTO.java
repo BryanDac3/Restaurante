@@ -30,7 +30,8 @@ public interface DishEntityToDishDTO {
             @Mapping(target = "name", ignore = true),
             @Mapping(target = "active", ignore = true),
             @Mapping(target = "restaurant", ignore = true),
-            @Mapping(target = "category", ignore = true)
+            @Mapping(target = "category", ignore = true),
+            @Mapping(target = "urlImgDish", ignore = true)
     })
     MenuDishEntity updateDishDTOToMenuDishEntity(UpdateDishDTO dish);
 
@@ -41,11 +42,5 @@ public interface DishEntityToDishDTO {
     })
     List<ListDishesDTO> listDishEntityToListDishesDTO(List<MenuDishEntity> listDish);
 
-    @Mappings({
-            @Mapping(target = "name", ignore = true),
-            @Mapping(target = "active", ignore = true),
-            @Mapping(target = "restaurant", ignore = true),
-            @Mapping(target = "category", ignore = true)
-    })
     List<CategoryInfoDTO> listMenuCategoryEntityToListCategoryInfoDTO(List<MenuCategoryEntity> category);
 }

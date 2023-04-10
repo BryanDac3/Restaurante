@@ -11,21 +11,21 @@ import java.io.Serializable;
 public class CreateUserDTO implements Serializable {
     private static final long serialVersionUID = 3151600367315730704L;
 
-    @NotNull
+    @NotBlank
     private String names;
 
-    @NotNull
+    @NotBlank
     private String lastNames;
 
-    @NotNull
+    @NotBlank
     @Pattern(regexp = "[0-9]+$")
     private String userDNI;
 
-    @NotNull
+    @NotBlank
     @Pattern(regexp = "(\\+[0-9]{2})+[0-9]{10}$")
     private String cellNumber;
 
-    @NotNull
+    @NotBlank
     @Pattern(regexp = "^[a-zA-Z0-9+_.-]+@[a-z]+\\.[a-z]{2,3}")
     private String email;
 
