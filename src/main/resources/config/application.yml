@@ -1,0 +1,17 @@
+# ==================================================
+# HTTP Server
+# ==================================================
+server:
+  servlet:
+    contextPath: /api
+
+# ==================================================
+# Spring General
+# ==================================================
+spring:
+  profiles:
+    active: dev
+  messages:
+    basename: i18n/messages
+  locale:
+    default: es
