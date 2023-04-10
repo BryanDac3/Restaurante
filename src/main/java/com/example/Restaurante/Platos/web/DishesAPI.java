@@ -1,14 +1,13 @@
 package com.example.Restaurante.Platos.web;
 
-import com.example.Restaurante.Platos.domain.dto.CreateDishDTO;
-import com.example.Restaurante.Platos.domain.dto.ListDishesDTO;
-import com.example.Restaurante.Platos.domain.dto.UpdateDishDTO;
+import com.example.Restaurante.Platos.domain.dto.*;
 import com.example.Restaurante.config.error.RestException;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequestMapping(value = "/dishes")
 public interface DishesAPI {
@@ -23,16 +22,24 @@ public interface DishesAPI {
             @Valid @RequestBody UpdateDishDTO dishDTO
             ) throws RestException;
 
-    @PutMapping(value = "/activeDish/{active}")
+    @PutMapping(value = "/activeDish")
     ResponseEntity<Void> activeDish(
-            @PathVariable Boolean active
+            @Valid @RequestBody List<ActiveDishDTO> dishActive
     ) throws RestException;
 
     @GetMapping
-    ResponseEntity<ListDishesDTO> listDishesRestaurant(
-            @RequestParam(required = true) Integer restaurantId
+    ResponseEntity<List<ListDishesDTO>> listDishesRestaurant(
+            @RequestParam(required = true) Integer restaurantId,
+            Pageable pageable
     );
 
-    @GetMapping
-    ResponseEntity<ListDishesDTO> listDishesOwner();
+    @GetMapping("/owner")
+    ResponseEntity<List<ListDishesDTO>>  listDishesOwner(
+            Pageable pageable
+    );
+
+    @GetMapping("/categories")
+    ResponseEntity<List<CategoryInfoDTO>> listCategoryDishes(
+            Pageable pageable
+    );
 }

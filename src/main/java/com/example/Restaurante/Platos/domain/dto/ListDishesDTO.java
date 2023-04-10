@@ -10,10 +10,11 @@ import java.io.Serializable;
 public class ListDishesDTO implements Serializable {
     private static final long serialVersionUID = 8317347753710004752L;
 
-    private Integer idDish;
+    private Integer id;
     private String name;
     private Integer price;
     private String description;
     private String urlImgDish;
-    private String category;
+    private CategoryInfoDTO category;
+    private Integer active;
 }

@@ -21,4 +21,6 @@ public class UpdateDishDTO implements Serializable {
 
     @NotNull
     private String description;
+
+    private String urlImgDish;
 }

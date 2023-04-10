@@ -26,7 +26,7 @@ public class CreateDishDTO implements Serializable {
     private String urlImgDish;
 
     @NotNull
-    private String category;
+    private Integer categoryId;
 
 
 }
