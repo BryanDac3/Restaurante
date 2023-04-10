@@ -32,4 +32,7 @@ public interface DishesAPI {
     ResponseEntity<ListDishesDTO> listDishesRestaurant(
             @RequestParam(required = true) Integer restaurantId
     );
+
+    @GetMapping
+    ResponseEntity<ListDishesDTO> listDishesOwner();
 }
