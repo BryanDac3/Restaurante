@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
         RestaurantEntity restaurant = new RestaurantEntity();
         restaurant.setId(restaurantOwnerId.get());
         newUser.setRestaurant(restaurant);
-
+        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         userRepository.save(newUser);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
