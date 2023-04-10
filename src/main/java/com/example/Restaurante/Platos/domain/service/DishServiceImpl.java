@@ -32,6 +32,9 @@ public class DishServiceImpl implements DishService {
 
     private static final Logger LOG = LoggerFactory.getLogger(RestauranteApplication.class);
 
+    private final static Integer ACTIVE_DISH = 1;
+    private final static Integer INACTIVE_DISH = 0;
+
     @Autowired
     private Utils utils;
     @Autowired
@@ -59,7 +62,7 @@ public class DishServiceImpl implements DishService {
         RestaurantEntity restaurant = new RestaurantEntity();
         restaurant.setId(restaurantId.get());
         newDish.setRestaurant(restaurant);
-        newDish.setActive(1);
+        newDish.setActive(ACTIVE_DISH);
         dishRepository.save(newDish);
         return ResponseEntity.ok().build();
     }
@@ -83,12 +86,12 @@ public class DishServiceImpl implements DishService {
         utils.validateCreatingRol(userRol, RolE.ONWER_VALUE);
         for(ActiveDishDTO dish: activeDishDTO){
             validateDishExist(dish.getDishId());
-            dishRepository.activeMenuDish(dish.getDishId(), dish.getActive()?1:0);
+            dishRepository.activeMenuDish(dish.getDishId(), dish.getActive() ? ACTIVE_DISH : INACTIVE_DISH);
         }
         return null;
     }
 
-    private void validateDishExist(Integer dishId) throws RestException{
+    private void validateDishExist(Integer dishId) throws RestException {
         Optional<MenuDishEntity> dishDB = dishRepository.findMenuDishEntityById(dishId);
         if(dishDB.isEmpty()){
             throw new RestException(RestExceptionE.ERROR_DISH_NOT_EXIST);
@@ -96,7 +99,7 @@ public class DishServiceImpl implements DishService {
     }
 
     @Override
-    public List<MenuDishEntity> listDishesRestaurant(Integer restaurantId, String userRol, Pageable pageable) throws RestException{
+    public List<MenuDishEntity> listDishesRestaurant(Integer restaurantId, String userRol, Pageable pageable) throws RestException {
         utils.validateCreatingRol(userRol, RolE.CLIENT_VALUE);
         Optional<Integer> restaurantIdDb = dishRepository.findRestaurantById(restaurantId);
         if(restaurantIdDb.isEmpty()){
