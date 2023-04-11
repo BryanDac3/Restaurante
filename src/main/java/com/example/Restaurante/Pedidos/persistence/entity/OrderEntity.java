@@ -1,6 +1,5 @@
 package com.example.Restaurante.Pedidos.persistence.entity;
 
-import com.example.Restaurante.Platos.persistence.entity.MenuDishEntity;
 import com.example.Restaurante.Usuarios.persistence.entity.UserEntity;
 import lombok.Data;
 import lombok.Getter;
@@ -25,11 +24,6 @@ public class OrderEntity implements Serializable {
     @Comment("Identificador de la tabla")
     private Integer id;
 
-    @NotNull
-    @Column(name = "CANTIDAD")
-    @Comment("La cantidad de platos solicitada por el cliente")
-    private Integer amount;
-
     @ManyToOne
     @JoinColumn(name = "ID_CHEF")
     @Comment("FK - Tabla USUARIOS")
@@ -43,13 +37,15 @@ public class OrderEntity implements Serializable {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "ID_PLA")
-    @Comment("FK - Tabla MENU_PLATOS")
-    private MenuDishEntity dish;
-
-    @NotNull
-    @ManyToOne
     @JoinColumn(name = "EST")
     @Comment("FK - Tabla ESTADO_PEDIDOS")
-    private StateOrderEntity state;
+    private OrderStateEntity state;
+
+    @Column(name = "PRECIO_TOTAL")
+    @Comment("Precio total de la cuenta")
+    private Integer totalPrice;
+
+    @Column(name = "PIN")
+    @Comment("PIN de validacion del pedido")
+    private String PIN;
 }

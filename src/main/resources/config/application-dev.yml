@@ -25,5 +25,5 @@ spring:
 # ===================================================
 twilio:
   account_sid: AC407a349fb1e5572a3b6b53f9e4237aeb
-  auth_token: a4a8f9da208d22ca99de9d4bd1f28eb5
+  auth_token: 3436d3aa02af228a2a92af8536f0c403
   trial_number: +15074167933

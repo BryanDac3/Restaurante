@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "estado_pedidos")
-public class StateOrderEntity implements Serializable {
+public class OrderStateEntity implements Serializable {
     private static final long serialVersionUID = -279795581381232415L;
 
     @Id
