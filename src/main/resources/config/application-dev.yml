@@ -19,3 +19,11 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+# ===================================================
+# Twilio
+# ===================================================
+twilio:
+  account_sid: AC407a349fb1e5572a3b6b53f9e4237aeb
+  auth_token: a4a8f9da208d22ca99de9d4bd1f28eb5
+  trial_number: +15074167933
