@@ -15,9 +15,9 @@ public class CreateOrderDTO implements Serializable {
     private static final long serialVersionUID = 4014289277201345539L;
 
     @NotNull
-    private Integer idOrder;
+    private Integer idPlate;
 
     @NotNull
-    @Min(value = 0)
+    @Min(value = 1)
     private Integer amount;
 }

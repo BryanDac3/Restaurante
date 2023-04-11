@@ -15,5 +15,4 @@ public class ListOrdersDTO implements Serializable {
     private Integer idOrder;
     private String nameClient;
     private DishOrderInfoDTO infoDish;
-    private String state;
 }
