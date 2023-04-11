@@ -3,6 +3,7 @@ package com.example.Restaurante.Pedidos.web;
 import com.example.Restaurante.Pedidos.domain.dto.CreateOrderDTO;
 import com.example.Restaurante.Platos.domain.dto.CreateDishDTO;
 import com.example.Restaurante.config.error.RestException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,8 @@ public interface OrdersAPI {
 
     @GetMapping(value = "/employee")
     ResponseEntity<Void> listOrderEmployee(
-            @RequestParam(required = true) String orderStateValue
+            @RequestParam(required = true) String orderStateValue,
+            Pageable pageable
     ) throws RestException;
 
     @GetMapping(value = "/employee/prepareOrder/{orderId}")

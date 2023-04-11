@@ -10,6 +10,7 @@ import com.twilio.type.PhoneNumber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,7 @@ public class OrdersServiceImpl implements OrdersService{
     }
 
     @Override
-    public ResponseEntity<Void> listOrderEmployee(String orderStateValue, Integer employeeId, String rolValue) throws RestException {
+    public ResponseEntity<Void> listOrderEmployee(String orderStateValue, Integer employeeId, String rolValue, Pageable pageable) throws RestException {
         return null;
     }
 
