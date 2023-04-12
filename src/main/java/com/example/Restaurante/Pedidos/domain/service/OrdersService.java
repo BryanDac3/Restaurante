@@ -16,7 +16,7 @@ public interface OrdersService {
             Integer clientId,
             String rolValue
     ) throws RestException;
-    ResponseEntity<Void> listOrderEmployee(
+    List<OrderEntity>  listOrderEmployee(
             String orderStateValue,
             Integer employeeId,
             String rolValue,
@@ -36,10 +36,6 @@ public interface OrdersService {
             Integer orderId,
             String pin,
             Integer employeeId,
-            String rolValue
-    ) throws RestException;
-    ResponseEntity<Void> infoClientOrder(
-            Integer clientId,
             String rolValue
     ) throws RestException;
     ResponseEntity<Void> cancelOrderClient(

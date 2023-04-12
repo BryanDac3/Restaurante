@@ -36,4 +36,10 @@ public class OrderDishEntity implements Serializable {
     @Column(name = "CANTIDAD")
     @Comment("La cantidad de platos solicitada por el cliente")
     private Integer amount;
+
+    @NotNull
+    @Column(name = "NOMBRE_PLATO")
+    @Comment("El nombre del plato para el que se realiza el pedido")
+    private String dishName;
+
 }

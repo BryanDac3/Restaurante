@@ -1,8 +1,10 @@
 package com.example.Restaurante.Pedidos.web;
 
 import com.example.Restaurante.Pedidos.domain.dto.CreateOrderDTO;
+import com.example.Restaurante.Pedidos.domain.dto.ListOrdersDTO;
 import com.example.Restaurante.Pedidos.domain.service.OrdersService;
 import com.example.Restaurante.Pedidos.persistence.entity.OrderDishEntity;
+import com.example.Restaurante.Pedidos.persistence.entity.OrderEntity;
 import com.example.Restaurante.Pedidos.persistence.mapper.OrderEntityToOrdersDTO;
 import com.example.Restaurante.application.RestauranteApplication;
 import com.example.Restaurante.config.error.RestException;
@@ -12,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,14 +45,18 @@ public class OrdersController implements OrdersAPI {
     }
 
     @Override
-    public ResponseEntity<Void> listOrderEmployee(String orderStateValue, Pageable pageable) throws RestException {
+    public ResponseEntity<List<ListOrdersDTO>> listOrderEmployee(String orderStateValue, Pageable pageable) throws RestException {
         UserDetailsImpl userDetails = utils.getUserInfo();
-        ordersService.listOrderEmployee(
+        if(orderStateValue == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        List<OrderEntity> orders =  ordersService.listOrderEmployee(
                 orderStateValue,
                 userDetails.getId(),
                 userDetails.getRol().getValue(),
                 pageable);
-        return null;
+        List<ListOrdersDTO> ordersDTOS = OrderEntityToOrdersDTO.INSTANCE.listOderEntityToListOrdersDTO(orders);
+        return ResponseEntity.ok().body(ordersDTOS);
     }
 
     @Override
@@ -80,16 +87,6 @@ public class OrdersController implements OrdersAPI {
         ordersService.deliverOrderEmployee(
                 orderId,
                 pin,
-                userDetails.getId(),
-                userDetails.getRol().getValue()
-        );
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<Void> infoClientOrder() throws RestException {
-        UserDetailsImpl userDetails = utils.getUserInfo();
-        ordersService.infoClientOrder(
                 userDetails.getId(),
                 userDetails.getRol().getValue()
         );

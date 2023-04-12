@@ -12,7 +12,6 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-@Data
 @Entity
 @Table(name = "usuarios")
 public class UserEntity implements Serializable{
@@ -65,7 +64,6 @@ public class UserEntity implements Serializable{
     @Comment("FK - Tabla RESTAURANTES")
     private RestaurantEntity restaurant;
 
-    public UserEntity(Integer id) {
-        this.id = id;
+    public UserEntity() {
     }
 }

@@ -10,7 +10,6 @@ import java.io.Serializable;
 public class DishOrderInfoDTO implements Serializable {
     private static final long serialVersionUID = 3836687240075095900L;
 
-    private String name;
+    private String dishName;
     private Integer amount;
-    private Integer price;
 }

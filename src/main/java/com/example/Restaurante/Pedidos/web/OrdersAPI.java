@@ -1,6 +1,8 @@
 package com.example.Restaurante.Pedidos.web;
 
 import com.example.Restaurante.Pedidos.domain.dto.CreateOrderDTO;
+import com.example.Restaurante.Pedidos.domain.dto.ListOrdersDTO;
+import com.example.Restaurante.Pedidos.persistence.entity.OrderEntity;
 import com.example.Restaurante.Platos.domain.dto.CreateDishDTO;
 import com.example.Restaurante.config.error.RestException;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +22,7 @@ public interface OrdersAPI {
     ) throws RestException;
 
     @GetMapping(value = "/employee")
-    ResponseEntity<Void> listOrderEmployee(
+    ResponseEntity<List<ListOrdersDTO>> listOrderEmployee(
             @RequestParam(required = true) String orderStateValue,
             Pageable pageable
     ) throws RestException;
@@ -40,9 +42,6 @@ public interface OrdersAPI {
             @RequestParam(required = true) String pin,
             @PathVariable Integer orderId
     ) throws RestException;
-
-    @GetMapping(value = "/client")
-    ResponseEntity<Void> infoClientOrder() throws RestException;
 
     @GetMapping(value = "/client/cancelOrder/{orderId}")
     ResponseEntity<Void> cancelOrderClient(

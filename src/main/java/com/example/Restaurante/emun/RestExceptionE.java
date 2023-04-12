@@ -17,6 +17,7 @@ public enum RestExceptionE {
     ERROR_DISH_ORDER(1011, HttpStatus.BAD_REQUEST, "Dish.order"),
     ERROR_ORDER_DISH_NOT_SAME_RESTAURANT(1012, HttpStatus.BAD_REQUEST, "Dish.not.same.restaurant"),
     ERROR_ORDER_DUPLICATE_DISH(1013, HttpStatus.BAD_REQUEST, "Order.duplicate.dish"),
+    ERROR_ORDER_STATE_NOT_EXIST(1014, HttpStatus.BAD_REQUEST, "Order.state.not.exist"),
     UNAUTHORIZED(4001, HttpStatus.UNAUTHORIZED, "User.unauthorized"),
     ;
 

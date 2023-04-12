@@ -33,7 +33,4 @@ public class OrderStateEntity implements Serializable {
     @Column(name = "VAL")
     @Comment("valor del estado del pedido")
     private String value;
-
-    @OneToMany(mappedBy = "state")
-    private List<OrderEntity> orders;
 }

@@ -9,10 +9,10 @@ import org.hibernate.annotations.Comment;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
-@Data
 @Entity
 @Table(name = "pedidos")
 public class OrderEntity implements Serializable {
@@ -48,4 +48,7 @@ public class OrderEntity implements Serializable {
     @Column(name = "PIN")
     @Comment("PIN de validacion del pedido")
     private String PIN;
+
+    @OneToMany(mappedBy = "orderEntity")
+    private List<OrderDishEntity> orderDish;
 }
