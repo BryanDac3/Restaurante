@@ -47,9 +47,6 @@ public class OrdersController implements OrdersAPI {
     @Override
     public ResponseEntity<List<ListOrdersDTO>> listOrderEmployee(String orderStateValue, Pageable pageable) throws RestException {
         UserDetailsImpl userDetails = utils.getUserInfo();
-        if(orderStateValue == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
         List<OrderEntity> orders =  ordersService.listOrderEmployee(
                 orderStateValue,
                 userDetails.getId(),
@@ -100,6 +97,18 @@ public class OrdersController implements OrdersAPI {
                 orderId,
                 userDetails.getId(),
                 userDetails.getRol().getValue()
+        );
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<ListOrdersDTO> listOrderClient(String orderStateValue, Pageable pageable) throws RestException {
+        UserDetailsImpl userDetails = utils.getUserInfo();
+        ordersService.listOrderClient(
+                orderStateValue,
+                userDetails.getId(),
+                userDetails.getRol().getValue(),
+                pageable
         );
         return null;
     }

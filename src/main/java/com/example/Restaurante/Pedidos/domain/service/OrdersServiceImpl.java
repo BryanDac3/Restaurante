@@ -9,6 +9,7 @@ import com.example.Restaurante.Pedidos.persistence.entity.OrderDishEntity;
 import com.example.Restaurante.Pedidos.persistence.entity.OrderEntity;
 import com.example.Restaurante.Pedidos.persistence.entity.OrderStateEntity;
 import com.example.Restaurante.Platos.persistence.entity.MenuDishEntity;
+import com.example.Restaurante.Restaurantes.persistence.entity.RestaurantEntity;
 import com.example.Restaurante.Usuarios.persistence.entity.UserEntity;
 import com.example.Restaurante.config.Twilio.TwilioConfiguration;
 import com.example.Restaurante.config.error.RestException;
@@ -76,7 +77,7 @@ public class OrdersServiceImpl implements OrdersService{
         }
         validateDuplicateDish(dishesId);
 
-        OrderEntity newOrder = createOrder(totalCount, clientId);
+        OrderEntity newOrder = createOrder(restaurantId, totalCount, clientId);
         createOrderDish(orders, newOrder);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -114,12 +115,15 @@ public class OrdersServiceImpl implements OrdersService{
         }
     }
 
-    private OrderEntity createOrder(Integer totalPrice, Integer clientId) {
+    private OrderEntity createOrder(Integer restaurantId, Integer totalPrice, Integer clientId) {
         OrderEntity orderEntity = new OrderEntity();
         UserEntity clientEntity = new UserEntity();
         clientEntity.setId(clientId);
+        RestaurantEntity restaurant = new RestaurantEntity();
+        restaurant.setId(restaurantId);
 
         orderEntity.setClient(clientEntity);
+        orderEntity.setRestaurant(restaurant);
         orderEntity.setTotalPrice(totalPrice);
         orderEntity.setState(orderStateRepository.findOrderStateEntityByValue(
                 OrderStateE.PENDING_ORDER.getValue()).get()
@@ -137,27 +141,44 @@ public class OrdersServiceImpl implements OrdersService{
     }
 
     @Override
-    public List<OrderEntity> listOrderEmployee(String orderStateValue, Integer employeeId, String rolValue, Pageable pageable) throws RestException {
-        List<OrderEntity> orders = new ArrayList<>();
-
+    public List<OrderEntity> listOrderEmployee(
+            String orderStateValue,
+            Integer employeeId,
+            String rolValue,
+            Pageable pageable
+    ) throws RestException {
         utils.validateCreatingRol(rolValue, RolE.EMPLOYEE_VALUE);
+        Integer restaurantId = orderRepository.findRestaurantIdByEmployeeId(employeeId).get();
+        if(orderStateValue != null){
+            return listOrderWithStateFilter(employeeId, restaurantId, orderStateValue, pageable);
+        }
+        else{
+            return listOrderWithOutStateFilter(restaurantId, pageable);
+        }
+    }
+
+    private List<OrderEntity> listOrderWithStateFilter(Integer employeeId, Integer restaurantId, String orderStateValue, Pageable pageable) throws RestException {
+        Page<OrderEntity> ordersPaged;
         Optional<OrderStateEntity> orderStateO = orderStateRepository.findOrderStateEntityByValue(orderStateValue);
         if(orderStateO.isEmpty()){
             throw new RestException(RestExceptionE.ERROR_ORDER_STATE_NOT_EXIST);
         }
         OrderStateEntity orderState = orderStateO.get();
-        
+
         if(orderState.getValue().equals(OrderStateE.PENDING_ORDER.getValue())
-            || orderState.getValue().equals(OrderStateE.CANCEL_ORDER.getValue())){
-            Page<OrderEntity> ordersPaged =
-                    orderRepository.findOrderEntityByStateId(orderState.getId(), pageable);
-            return ordersPaged.getContent();
+                || orderState.getValue().equals(OrderStateE.CANCEL_ORDER.getValue())){
+            ordersPaged = orderRepository.findOrderEntityByStateIdAndRestaurantId(
+                    orderState.getId(), restaurantId, pageable);
         }
         else{
-            Page<OrderEntity> ordersPaged =
-                    orderRepository.findOrderEntityByStateIdAndChefId(orderState.getId(), employeeId, pageable);
+            ordersPaged = orderRepository.findOrderEntityByStateIdAndChefId(orderState.getId(), employeeId, pageable);
         }
-        return orders;
+        return ordersPaged.getContent();
+    }
+
+    private List<OrderEntity> listOrderWithOutStateFilter(Integer restaurantId, Pageable pageable) throws RestException {
+        Page<OrderEntity> ordersPaged = orderRepository.findOrderEntityByRestaurantId(restaurantId, pageable);
+        return ordersPaged.getContent();
     }
 
     @Override
@@ -189,5 +210,25 @@ public class OrdersServiceImpl implements OrdersService{
         messageCreator.create();
         LOG.info("Se envia {}", smsRequest);
         return null;
+    }
+
+    @Override
+    public List<OrderEntity> listOrderClient(String orderStateValue, Integer clientId, String rolValue, Pageable pageable) throws RestException {
+        Page<OrderEntity> ordersPaged;
+        utils.validateCreatingRol(rolValue, RolE.CLIENT_VALUE);
+        Optional<OrderStateEntity> orderStateO = orderStateRepository.findOrderStateEntityByValue(orderStateValue);
+        if(orderStateO.isEmpty()){
+            throw new RestException(RestExceptionE.ERROR_ORDER_STATE_NOT_EXIST);
+        }
+        OrderStateEntity orderState = orderStateO.get();
+
+        if(orderStateValue != null){
+            ordersPaged = orderRepository.findOrderEntityByStateIdAndClientId(orderState.getId(), clientId, pageable);
+            return ordersPaged.getContent();
+        }
+        else{
+            ordersPaged = orderRepository.findOrderEntityByClientId(clientId, pageable);
+            return ordersPaged.getContent();
+        }
     }
 }

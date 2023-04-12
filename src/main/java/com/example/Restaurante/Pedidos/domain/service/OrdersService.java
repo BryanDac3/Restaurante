@@ -44,5 +44,11 @@ public interface OrdersService {
             String rolValue
     ) throws RestException;
     ResponseEntity<Void> sendMessage(SmsRequest smsRequest);
+    List<OrderEntity>  listOrderClient(
+            String orderStateValue,
+            Integer clientId,
+            String rolValue,
+            Pageable pageable
+    ) throws RestException;
 
 }
