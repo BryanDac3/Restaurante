@@ -1,6 +1,7 @@
 package com.example.Restaurante.Pedidos.domain.service;
 
 import com.example.Restaurante.Pedidos.domain.dto.SmsRequest;
+import com.example.Restaurante.Pedidos.persistence.entity.OrderDishEntity;
 import com.example.Restaurante.Pedidos.persistence.entity.OrderEntity;
 import com.example.Restaurante.Usuarios.persistence.entity.UserEntity;
 import com.example.Restaurante.config.error.RestException;
@@ -11,7 +12,7 @@ import java.util.List;
 
 public interface OrdersService {
     ResponseEntity<Void> makeOrder(
-            List<OrderEntity> orderEntities,
+            List<OrderDishEntity> orderEntities,
             Integer clientId,
             String rolValue
     ) throws RestException;

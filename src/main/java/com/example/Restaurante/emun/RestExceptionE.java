@@ -13,6 +13,10 @@ public enum RestExceptionE {
     ERROR_DISH_EXIST(1007, HttpStatus.BAD_REQUEST, "Dish.already.exist"),
     ERROR_DISH_NOT_EXIST(1008, HttpStatus.BAD_REQUEST, "Dish.not.exist"),
     ERROR_CATEGORY_NOT_EXIST(1009, HttpStatus.BAD_REQUEST, "Category.not.exist"),
+    ERROR_AMOUNT_ORDER(1010, HttpStatus.BAD_REQUEST, "Amount.order"),
+    ERROR_DISH_ORDER(1011, HttpStatus.BAD_REQUEST, "Dish.order"),
+    ERROR_ORDER_DISH_NOT_SAME_RESTAURANT(1012, HttpStatus.BAD_REQUEST, "Dish.not.same.restaurant"),
+    ERROR_ORDER_DUPLICATE_DISH(1013, HttpStatus.BAD_REQUEST, "Order.duplicate.dish"),
     UNAUTHORIZED(4001, HttpStatus.UNAUTHORIZED, "User.unauthorized"),
     ;
 

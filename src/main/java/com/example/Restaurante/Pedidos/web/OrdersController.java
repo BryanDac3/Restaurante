@@ -2,6 +2,8 @@ package com.example.Restaurante.Pedidos.web;
 
 import com.example.Restaurante.Pedidos.domain.dto.CreateOrderDTO;
 import com.example.Restaurante.Pedidos.domain.service.OrdersService;
+import com.example.Restaurante.Pedidos.persistence.entity.OrderDishEntity;
+import com.example.Restaurante.Pedidos.persistence.mapper.OrderEntityToOrdersDTO;
 import com.example.Restaurante.application.RestauranteApplication;
 import com.example.Restaurante.config.error.RestException;
 import com.example.Restaurante.config.security.UserDetailsImpl;
@@ -30,12 +32,13 @@ public class OrdersController implements OrdersAPI {
     @Override
     public ResponseEntity<Void> makeOrder(List<CreateOrderDTO> ordersDTO) throws RestException {
         UserDetailsImpl userDetails = utils.getUserInfo();
-        ordersService.makeOrder(
-                null,
+        List<OrderDishEntity> orders =
+                OrderEntityToOrdersDTO.INSTANCE.listCreateOrderDTOToListOrderDishEntity(ordersDTO);
+        return ordersService.makeOrder(
+                orders,
                 userDetails.getId(),
                 userDetails.getRol().getValue()
         );
-        return null;
     }
 
     @Override

@@ -65,4 +65,7 @@ public class UserEntity implements Serializable{
     @Comment("FK - Tabla RESTAURANTES")
     private RestaurantEntity restaurant;
 
+    public UserEntity(Integer id) {
+        this.id = id;
+    }
 }

@@ -10,14 +10,10 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-@Data
 public class CreateOrderDTO implements Serializable {
     private static final long serialVersionUID = 4014289277201345539L;
 
-    @NotNull
-    private Integer idPlate;
+    private Integer dishId;
 
-    @NotNull
-    @Min(value = 1)
     private Integer amount;
 }
