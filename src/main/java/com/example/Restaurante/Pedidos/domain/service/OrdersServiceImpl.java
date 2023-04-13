@@ -69,7 +69,7 @@ public class OrdersServiceImpl implements OrdersService{
     @Transactional
     public ResponseEntity<Void> makeOrder(
             List<OrderDishEntity> orders, Integer clientId, String rolValue) throws RestException {
-        utils.validateCreatingRol(rolValue, RolE.CLIENT_VALUE);
+        utils.validateUserRol(rolValue, RolE.CLIENT_VALUE);
         Integer restaurantId = null;
         List<Integer> dishesId = new ArrayList<>();
         Integer totalCount = 0;
@@ -156,7 +156,7 @@ public class OrdersServiceImpl implements OrdersService{
             String rolValue,
             Pageable pageable
     ) throws RestException {
-        utils.validateCreatingRol(rolValue, RolE.EMPLOYEE_VALUE);
+        utils.validateUserRol(rolValue, RolE.EMPLOYEE_VALUE);
         Integer restaurantId = orderRepository.findRestaurantIdByEmployeeId(employeeId).get();
         if(orderStateValue != null){
             return listOrderWithStateFilter(employeeId, restaurantId, orderStateValue, pageable);
@@ -192,7 +192,7 @@ public class OrdersServiceImpl implements OrdersService{
 
     @Override
     public ResponseEntity<Void> prepareOrderEmployee(Integer orderId, Integer employeeId, String rolValue) throws RestException {
-        utils.validateCreatingRol(rolValue, RolE.EMPLOYEE_VALUE);
+        utils.validateUserRol(rolValue, RolE.EMPLOYEE_VALUE);
 
         OrderEntity orderDb = validateEmployeeOrderSameRestaurant(orderId, employeeId);
         validateOrderState(orderDb, OrderStateE.PENDING_ORDER, RestExceptionE.ERROR_ORDER_NOT_PENDING);
@@ -224,7 +224,7 @@ public class OrdersServiceImpl implements OrdersService{
 
     @Override
     public ResponseEntity<Void> finishOrderEmployee(Integer orderId, Integer employeeId, String rolValue) throws RestException {
-        utils.validateCreatingRol(rolValue, RolE.EMPLOYEE_VALUE);
+        utils.validateUserRol(rolValue, RolE.EMPLOYEE_VALUE);
 
         OrderEntity orderDb = validateEmployeeOrderSameRestaurant(orderId, employeeId);
         validateOrderState(orderDb, OrderStateE.PREPARATION_ORDER, RestExceptionE.ERROR_ORDER_NOT_PREPARING);
@@ -273,7 +273,7 @@ public class OrdersServiceImpl implements OrdersService{
 
     @Override
     public ResponseEntity<Void> deliverOrderEmployee(Integer orderId, String pin, Integer employeeId, String rolValue) throws RestException {
-        utils.validateCreatingRol(rolValue, RolE.EMPLOYEE_VALUE);
+        utils.validateUserRol(rolValue, RolE.EMPLOYEE_VALUE);
 
         OrderEntity orderDb = validateEmployeeOrderSameRestaurant(orderId, employeeId);
         validateOrderState(orderDb, OrderStateE.FINISH_ORDER, RestExceptionE.ERROR_ORDER_NOT_FINISH);
@@ -290,7 +290,7 @@ public class OrdersServiceImpl implements OrdersService{
 
     @Override
     public ResponseEntity<Void> cancelOrderClient(Integer orderId, Integer clientId, String rolValue) throws RestException {
-        utils.validateCreatingRol(rolValue, RolE.CLIENT_VALUE);
+        utils.validateUserRol(rolValue, RolE.CLIENT_VALUE);
         Optional<OrderEntity> orderDb = orderRepository.findOrderEntityById(orderId);
         if(orderDb.isEmpty()){
             throw new RestException(RestExceptionE.ERROR_ORDER_NOT_EXIST);
@@ -304,7 +304,7 @@ public class OrdersServiceImpl implements OrdersService{
     @Override
     public List<OrderEntity> listOrderClient(String orderStateValue, Integer clientId, String rolValue, Pageable pageable) throws RestException {
         Page<OrderEntity> ordersPaged;
-        utils.validateCreatingRol(rolValue, RolE.CLIENT_VALUE);
+        utils.validateUserRol(rolValue, RolE.CLIENT_VALUE);
 
         if(orderStateValue != null){
             Optional<OrderStateEntity> orderStateO = orderStateRepository.findOrderStateEntityByValue(orderStateValue);

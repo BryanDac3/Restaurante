@@ -29,7 +29,7 @@ public class Utils {
 
     }
 
-    public void validateCreatingRol (String rolCreatingEntity, RolE rolE) throws RestException {
+    public void validateUserRol (String rolCreatingEntity, RolE rolE) throws RestException {
         if(!rolCreatingEntity.equals(rolE.getValue())){
             throw new RestException(RestExceptionE.UNAUTHORIZED);
         }

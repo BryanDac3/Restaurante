@@ -31,7 +31,7 @@ public class RestaurantServiceImpl implements RestaurantsService {
     @Transactional
     @Override
     public ResponseEntity<Void> createRestaurant(RestaurantEntity restaurant, String rolValue, Integer ownerId) throws RestException {
-        utils.validateCreatingRol(rolValue, RolE.ONWER_VALUE);
+        utils.validateUserRol(rolValue, RolE.ONWER_VALUE);
 
         Optional<RestaurantEntity> restaurantDB = restaurantsRepository.findRestaurantEntityByNit(restaurant.getNit());
         if(restaurantDB == null || !restaurantDB.isEmpty()){
@@ -49,7 +49,7 @@ public class RestaurantServiceImpl implements RestaurantsService {
 
     @Override
     public List<RestaurantEntity> listRestaurant(String rolValue, Pageable pageable) throws RestException{
-        utils.validateCreatingRol(rolValue, RolE.CLIENT_VALUE);
+        utils.validateUserRol(rolValue, RolE.CLIENT_VALUE);
 
         Page<RestaurantEntity> listRestaurant = restaurantsRepository.findRestaurantEntityWithPagination(pageable);
         return listRestaurant.getContent();
@@ -57,7 +57,7 @@ public class RestaurantServiceImpl implements RestaurantsService {
 
     @Override
     public RestaurantEntity restaurantInfo(String rolValue, Integer restaurantId) throws RestException {
-        utils.validateCreatingRol(rolValue, RolE.CLIENT_VALUE);
+        utils.validateUserRol(rolValue, RolE.CLIENT_VALUE);
         Optional<RestaurantEntity> restaurant = restaurantsRepository.findRestaurantEntityById(restaurantId);
         if(restaurant == null || restaurant.isEmpty()){
             throw new RestException(RestExceptionE.ERROR_RESTAURANT_NOT_EXIST);

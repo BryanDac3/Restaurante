@@ -46,7 +46,7 @@ public class DishServiceImpl implements DishService {
     @Override
     @Transactional
     public ResponseEntity<Void> createDish(MenuDishEntity newDish, String userRol, Integer ownerId) throws RestException {
-        utils.validateCreatingRol(userRol, RolE.ONWER_VALUE);
+        utils.validateUserRol(userRol, RolE.ONWER_VALUE);
         Optional<Integer> restaurantId = dishRepository.findRestaurantIdByOwnerId(ownerId);
         if(restaurantId.isEmpty()){
             throw new RestException(RestExceptionE.ERROR_OWNER_NOT_RESTAURANT);
@@ -70,7 +70,7 @@ public class DishServiceImpl implements DishService {
     @Override
     @Transactional
     public ResponseEntity<Void> updateDish(MenuDishEntity updateDish, String userRol) throws RestException {
-        utils.validateCreatingRol(userRol, RolE.ONWER_VALUE);
+        utils.validateUserRol(userRol, RolE.ONWER_VALUE);
         validateDishExist(updateDish.getId());
         dishRepository.updateMenuDish(
                 updateDish.getId(),
@@ -83,7 +83,7 @@ public class DishServiceImpl implements DishService {
     @Override
     @Transactional
     public ResponseEntity<Void> activeDish(List<ActiveDishDTO> activeDishDTO, String userRol) throws RestException {
-        utils.validateCreatingRol(userRol, RolE.ONWER_VALUE);
+        utils.validateUserRol(userRol, RolE.ONWER_VALUE);
         for(ActiveDishDTO dish: activeDishDTO){
             validateDishExist(dish.getDishId());
             dishRepository.activeMenuDish(dish.getDishId(), dish.getActive() ? ACTIVE_DISH : INACTIVE_DISH);
@@ -100,7 +100,7 @@ public class DishServiceImpl implements DishService {
 
     @Override
     public List<MenuDishEntity> listDishesRestaurant(Integer restaurantId, String userRol, Pageable pageable) throws RestException {
-        utils.validateCreatingRol(userRol, RolE.CLIENT_VALUE);
+        utils.validateUserRol(userRol, RolE.CLIENT_VALUE);
         Optional<Integer> restaurantIdDb = dishRepository.findRestaurantById(restaurantId);
         if(restaurantIdDb.isEmpty()){
             throw new RestException(RestExceptionE.ERROR_RESTAURANT_NOT_EXIST);
@@ -111,7 +111,7 @@ public class DishServiceImpl implements DishService {
 
     @Override
     public List<MenuDishEntity> listDishesOwner(Integer ownerId, String userRol, Pageable pageable) throws RestException {
-        utils.validateCreatingRol(userRol, RolE.ONWER_VALUE);
+        utils.validateUserRol(userRol, RolE.ONWER_VALUE);
         Optional<Integer> restaurantId = dishRepository.findRestaurantIdByOwnerId(ownerId);
         if(restaurantId.isEmpty()){
             throw new RestException(RestExceptionE.ERROR_OWNER_NOT_RESTAURANT);
@@ -122,7 +122,7 @@ public class DishServiceImpl implements DishService {
 
     @Override
     public List<MenuCategoryEntity> listDishCategory(String userRol) throws RestException {
-        utils.validateCreatingRol(userRol, RolE.ONWER_VALUE);
+        utils.validateUserRol(userRol, RolE.ONWER_VALUE);
         List<MenuCategoryEntity> dishCategory = dishCategoryRepository.findAllMenuCategoryEntity();
         return dishCategory;
     }

@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public ResponseEntity<Void> createOwner(UserEntity newUser, String rolCreatingEntity) throws RestException {
-        utils.validateCreatingRol(rolCreatingEntity, RolE.ADMIN_VALUE);
+        utils.validateUserRol(rolCreatingEntity, RolE.ADMIN_VALUE);
 
         RestExceptionE restExceptionE = validateNewUser(newUser);
         if(restExceptionE != null){
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public ResponseEntity<Void> createEmployee(UserEntity newUser, Integer ownerId, String rolCreatingEntity) throws RestException{
-        utils.validateCreatingRol(rolCreatingEntity, RolE.ONWER_VALUE);
+        utils.validateUserRol(rolCreatingEntity, RolE.ONWER_VALUE);
 
         RestExceptionE restExceptionE = validateNewUser(newUser);
         if(restExceptionE != null){
