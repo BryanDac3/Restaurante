@@ -58,6 +58,22 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
             @Param("orderStateId") Integer orderStateId,
             @Param("pin") String pin);
 
+    @Modifying
+    @Transactional
+    @Query(value = "update pedidos set EST = :orderStateId where ID_PED = :orderId",
+            nativeQuery = true)
+    int updateDeliveryOrder(
+            @Param("orderId") Integer orderId,
+            @Param("orderStateId") Integer orderStateId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "update pedidos set EST = :orderStateId where ID_PED = :orderId",
+            nativeQuery = true)
+    int updateCancelOrder(
+            @Param("orderId") Integer orderId,
+            @Param("orderStateId") Integer orderStateId);
+
     @Query(value = "select users.CEL_USU from pedidos ped " +
             "join usuarios users on users.ID_USU = ped.ID_CLI where ped.ID_PED = :orderId",
             nativeQuery = true)

@@ -25,6 +25,8 @@ public enum RestExceptionE {
     ERROR_ORDER_NOT_FINISH(1019, HttpStatus.BAD_REQUEST, "Order.not.finish"),
     ERROR_ORDER_CANCEL(1020, HttpStatus.BAD_REQUEST, "Order.cancel"),
     ERROR_SEND_SMS(1021, HttpStatus.BAD_REQUEST, "Order.not.send.SMS"),
+    ERROR_ORDER_PIN_NOT_VALID(1022, HttpStatus.BAD_REQUEST, "Order.pin.not.valid"),
+    ERROR_ORDER_CANNOT_CANCEL(1023, HttpStatus.BAD_REQUEST, "Order.cannot.cancel"),
     UNAUTHORIZED(4001, HttpStatus.UNAUTHORIZED, "User.unauthorized"),
     ;
 

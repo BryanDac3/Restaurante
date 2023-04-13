@@ -80,24 +80,22 @@ public class OrdersController implements OrdersAPI {
     @Override
     public ResponseEntity<Void> deliverOrderEmployee(String pin, Integer orderId) throws RestException {
         UserDetailsImpl userDetails = utils.getUserInfo();
-        ordersService.deliverOrderEmployee(
+        return ordersService.deliverOrderEmployee(
                 orderId,
                 pin,
                 userDetails.getId(),
                 userDetails.getRol().getValue()
         );
-        return null;
     }
 
     @Override
     public ResponseEntity<Void> cancelOrderClient(Integer orderId) throws RestException {
         UserDetailsImpl userDetails = utils.getUserInfo();
-        ordersService.cancelOrderClient(
+        return ordersService.cancelOrderClient(
                 orderId,
                 userDetails.getId(),
                 userDetails.getRol().getValue()
         );
-        return null;
     }
 
     @Override

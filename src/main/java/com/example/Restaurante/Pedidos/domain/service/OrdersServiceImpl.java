@@ -237,35 +237,6 @@ public class OrdersServiceImpl implements OrdersService{
         return null;
     }
 
-    @Override
-    public ResponseEntity<Void> deliverOrderEmployee(Integer orderId, String pin, Integer employeeId, String rolValue) throws RestException {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<Void> cancelOrderClient(Integer orderId, Integer clientId, String rolValue) throws RestException {
-        return null;
-    }
-
-    @Override
-    public List<OrderEntity> listOrderClient(String orderStateValue, Integer clientId, String rolValue, Pageable pageable) throws RestException {
-        Page<OrderEntity> ordersPaged;
-        utils.validateCreatingRol(rolValue, RolE.CLIENT_VALUE);
-        Optional<OrderStateEntity> orderStateO = orderStateRepository.findOrderStateEntityByValue(orderStateValue);
-        if(orderStateO.isEmpty()){
-            throw new RestException(RestExceptionE.ERROR_ORDER_STATE_NOT_EXIST);
-        }
-        OrderStateEntity orderState = orderStateO.get();
-
-        if(orderStateValue != null){
-            ordersPaged = orderRepository.findOrderEntityByStateIdAndClientId(orderState.getId(), clientId, pageable);
-        }
-        else{
-            ordersPaged = orderRepository.findOrderEntityByClientId(clientId, pageable);
-        }
-        return ordersPaged.getContent();
-    }
-
     private String sendClientSMS(String phoneNumber, String pin) throws RestException {
         try{
             PhoneNumber to = new PhoneNumber(phoneNumber);
@@ -297,5 +268,54 @@ public class OrdersServiceImpl implements OrdersService{
             }
         }
         return null;
+    }
+
+    @Override
+    public ResponseEntity<Void> deliverOrderEmployee(Integer orderId, String pin, Integer employeeId, String rolValue) throws RestException {
+        utils.validateCreatingRol(rolValue, RolE.EMPLOYEE_VALUE);
+
+        OrderEntity orderDb = validateEmployeeOrderSameRestaurant(orderId, employeeId);
+        validateOrderState(orderDb, OrderStateE.FINISH_ORDER, RestExceptionE.ERROR_ORDER_NOT_FINISH);
+        Optional<OrderStateEntity> orderState = orderStateRepository.findOrderStateEntityByValue(OrderStateE.DELIVERY_ORDER.getValue());
+
+        if(!orderDb.getPIN().equals(pin)){
+            throw new RestException(RestExceptionE.ERROR_ORDER_PIN_NOT_VALID);
+        }
+
+        orderRepository.updateDeliveryOrder(orderId, orderState.get().getId());
+
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> cancelOrderClient(Integer orderId, Integer clientId, String rolValue) throws RestException {
+        utils.validateCreatingRol(rolValue, RolE.EMPLOYEE_VALUE);
+        Optional<OrderEntity> orderDb = orderRepository.findOrderEntityById(orderId);
+        if(orderDb.isEmpty()){
+            throw new RestException(RestExceptionE.ERROR_ORDER_NOT_EXIST);
+        }
+        validateOrderState(orderDb.get(), OrderStateE.PENDING_ORDER, RestExceptionE.ERROR_ORDER_CANNOT_CANCEL);
+        Optional<OrderStateEntity> orderState = orderStateRepository.findOrderStateEntityByValue(OrderStateE.CANCEL_ORDER.getValue());
+        orderRepository.updateCancelOrder(orderId, orderState.get().getId());
+        return null;
+    }
+
+    @Override
+    public List<OrderEntity> listOrderClient(String orderStateValue, Integer clientId, String rolValue, Pageable pageable) throws RestException {
+        Page<OrderEntity> ordersPaged;
+        utils.validateCreatingRol(rolValue, RolE.CLIENT_VALUE);
+        Optional<OrderStateEntity> orderStateO = orderStateRepository.findOrderStateEntityByValue(orderStateValue);
+        if(orderStateO.isEmpty()){
+            throw new RestException(RestExceptionE.ERROR_ORDER_STATE_NOT_EXIST);
+        }
+        OrderStateEntity orderState = orderStateO.get();
+
+        if(orderStateValue != null){
+            ordersPaged = orderRepository.findOrderEntityByStateIdAndClientId(orderState.getId(), clientId, pageable);
+        }
+        else{
+            ordersPaged = orderRepository.findOrderEntityByClientId(clientId, pageable);
+        }
+        return ordersPaged.getContent();
     }
 }
