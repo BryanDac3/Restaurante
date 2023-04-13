@@ -43,7 +43,8 @@ public class OrdersServiceImpl implements OrdersService{
     private static final Logger LOG = LoggerFactory.getLogger(OrdersServiceImpl.class);
 
     private String MESSAGE_SMS = "Message.sms";
-    public static final int NUMBER_PIN_RANGE = 8;
+    public static final int NUMBER_PIN_RANGE_MAX = 8;
+    public static final int NUMBER_PIN_RANGE_MIN = 0;
 
     @Autowired
     private Utils utils;
@@ -246,7 +247,7 @@ public class OrdersServiceImpl implements OrdersService{
             messageCreator.create();
             LOG.info("Se envia al numero {}", phoneNumber);
         }catch (Exception e){
-            LOG.info("No fue posible enviar el SMS error: {}", e);
+            LOG.error("No fue posible enviar el SMS error: {}", e);
             throw new RestException(RestExceptionE.ERROR_SEND_SMS);
         };
         return pin;
@@ -256,8 +257,8 @@ public class OrdersServiceImpl implements OrdersService{
         boolean createdPin = true;
         while (createdPin){
             String pin = "";
-            for(int i = 0; i < NUMBER_PIN_RANGE; i++){
-                String numberPin = String.valueOf((int)(Math.random()*9+1));
+            for(int i = NUMBER_PIN_RANGE_MIN; i < NUMBER_PIN_RANGE_MAX; i++){
+                String numberPin = String.valueOf((int)(Math.random() * 9 + 1));
                 pin += numberPin;
             }
             Optional<OrderStateEntity> orderState = orderStateRepository.findOrderStateEntityByValue(OrderStateE.FINISH_ORDER.getValue());
