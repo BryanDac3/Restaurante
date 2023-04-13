@@ -1,6 +1,5 @@
 package com.example.Restaurante.Pedidos.domain.service;
 
-import com.example.Restaurante.Pedidos.domain.dto.SmsRequest;
 import com.example.Restaurante.Pedidos.domain.repositorio.DishORepository;
 import com.example.Restaurante.Pedidos.domain.repositorio.OrderDishRepository;
 import com.example.Restaurante.Pedidos.domain.repositorio.OrderRepository;
@@ -23,6 +22,8 @@ import com.twilio.type.PhoneNumber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class OrdersServiceImpl implements OrdersService{
@@ -39,6 +41,9 @@ public class OrdersServiceImpl implements OrdersService{
     private final TwilioConfiguration twilioConfiguration;
 
     private static final Logger LOG = LoggerFactory.getLogger(OrdersServiceImpl.class);
+
+    private String MESSAGE_SMS = "Message.sms";
+    public static final int NUMBER_PIN_RANGE = 8;
 
     @Autowired
     private Utils utils;
@@ -50,6 +55,9 @@ public class OrdersServiceImpl implements OrdersService{
     private OrderDishRepository orderDishRepository;
     @Autowired
     private OrderStateRepository orderStateRepository;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Autowired
     public OrdersServiceImpl(TwilioConfiguration twilioConfiguration) {
@@ -78,7 +86,7 @@ public class OrdersServiceImpl implements OrdersService{
         validateDuplicateDish(dishesId);
 
         OrderEntity newOrder = createOrder(restaurantId, totalCount, clientId);
-        createOrderDish(orders, newOrder);
+        createOrdersDish(orders, newOrder);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -132,7 +140,7 @@ public class OrdersServiceImpl implements OrdersService{
         return newOrder;
     }
 
-    private void createOrderDish(List<OrderDishEntity> orders, OrderEntity orderEntity) {
+    private void createOrdersDish(List<OrderDishEntity> orders, OrderEntity orderEntity) {
         for(OrderDishEntity order: orders){
             order.getId().setOrderId(orderEntity.getId());
             order.setOrderEntity(orderEntity);
@@ -183,11 +191,49 @@ public class OrdersServiceImpl implements OrdersService{
 
     @Override
     public ResponseEntity<Void> prepareOrderEmployee(Integer orderId, Integer employeeId, String rolValue) throws RestException {
-        return null;
+        utils.validateCreatingRol(rolValue, RolE.EMPLOYEE_VALUE);
+
+        OrderEntity orderDb = validateEmployeeOrderSameRestaurant(orderId, employeeId);
+        validateOrderState(orderDb, OrderStateE.PENDING_ORDER, RestExceptionE.ERROR_ORDER_NOT_PENDING);
+
+        Optional<OrderStateEntity> orderState = orderStateRepository.findOrderStateEntityByValue(OrderStateE.PREPARATION_ORDER.getValue());
+        orderRepository.updatePreparingOrder(employeeId, orderId, orderState.get().getId());
+        return ResponseEntity.ok().build();
+    }
+
+    private OrderEntity validateEmployeeOrderSameRestaurant(Integer orderId, Integer employeeId) throws RestException {
+        Optional<OrderEntity> orderDb = orderRepository.findOrderEntityById(orderId);
+        if(orderDb.isEmpty()){
+            throw new RestException(RestExceptionE.ERROR_ORDER_NOT_EXIST);
+        }
+        Integer restaurantEmployeeId = orderRepository.findRestaurantIdByEmployeeId(employeeId).get();
+
+        if(!restaurantEmployeeId.equals(orderDb.get().getRestaurant().getId())){
+            throw new RestException(RestExceptionE.ERROR_ORDER_EMPLOYEE_NOT_SAME_RESTAURANT);
+        }
+        return orderDb.get();
+    }
+
+    private void validateOrderState(
+            OrderEntity order, OrderStateE orderStateE, RestExceptionE restExceptionE) throws RestException{
+        if(!order.getState().getValue().equals(orderStateE.getValue())){
+            throw new RestException(restExceptionE);
+        }
     }
 
     @Override
     public ResponseEntity<Void> finishOrderEmployee(Integer orderId, Integer employeeId, String rolValue) throws RestException {
+        utils.validateCreatingRol(rolValue, RolE.EMPLOYEE_VALUE);
+
+        OrderEntity orderDb = validateEmployeeOrderSameRestaurant(orderId, employeeId);
+        validateOrderState(orderDb, OrderStateE.PREPARATION_ORDER, RestExceptionE.ERROR_ORDER_NOT_PREPARING);
+        Optional<OrderStateEntity> orderState = orderStateRepository.findOrderStateEntityByValue(OrderStateE.FINISH_ORDER.getValue());
+
+        String pin = createPINOrder();
+        orderRepository.updateFinishOrder(employeeId, orderId, orderState.get().getId(), pin);
+
+        String clientPhoneNumber = orderRepository.findClientNumberByOderId(orderId).get();
+        sendClientSMS(clientPhoneNumber, pin);
         return null;
     }
 
@@ -198,17 +244,6 @@ public class OrdersServiceImpl implements OrdersService{
 
     @Override
     public ResponseEntity<Void> cancelOrderClient(Integer orderId, Integer clientId, String rolValue) throws RestException {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<Void> sendMessage(SmsRequest smsRequest) {
-        PhoneNumber to = new PhoneNumber(smsRequest.getPhoneNumber());
-        PhoneNumber from = new PhoneNumber(twilioConfiguration.getTrialNumber());
-        String message = smsRequest.getMessage();
-        MessageCreator messageCreator = Message.creator(to, from, message);
-        messageCreator.create();
-        LOG.info("Se envia {}", smsRequest);
         return null;
     }
 
@@ -224,11 +259,43 @@ public class OrdersServiceImpl implements OrdersService{
 
         if(orderStateValue != null){
             ordersPaged = orderRepository.findOrderEntityByStateIdAndClientId(orderState.getId(), clientId, pageable);
-            return ordersPaged.getContent();
         }
         else{
             ordersPaged = orderRepository.findOrderEntityByClientId(clientId, pageable);
-            return ordersPaged.getContent();
         }
+        return ordersPaged.getContent();
+    }
+
+    private String sendClientSMS(String phoneNumber, String pin) throws RestException {
+        try{
+            PhoneNumber to = new PhoneNumber(phoneNumber);
+            PhoneNumber from = new PhoneNumber(twilioConfiguration.getTrialNumber());
+            String message = messageSource.getMessage(MESSAGE_SMS, null, LocaleContextHolder.getLocale()) + pin;
+            MessageCreator messageCreator = Message.creator(to, from, message);
+            messageCreator.create();
+            LOG.info("Se envia al numero {}", phoneNumber);
+        }catch (Exception e){
+            LOG.info("No fue posible enviar el SMS error: {}", e);
+            throw new RestException(RestExceptionE.ERROR_SEND_SMS);
+        };
+        return pin;
+    }
+
+    private String createPINOrder(){
+        boolean createdPin = true;
+        while (createdPin){
+            String pin = "";
+            for(int i = 0; i < NUMBER_PIN_RANGE; i++){
+                String numberPin = String.valueOf((int)(Math.random()*9+1));
+                pin += numberPin;
+            }
+            Optional<OrderStateEntity> orderState = orderStateRepository.findOrderStateEntityByValue(OrderStateE.FINISH_ORDER.getValue());
+            Optional<String> pinDB = orderRepository.findPinByOderId(pin, orderState.get().getId());
+            if(pinDB.isEmpty()){
+                createdPin = false;
+                return pin;
+            }
+        }
+        return null;
     }
 }

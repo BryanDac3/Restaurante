@@ -1,9 +1,7 @@
 package com.example.Restaurante.Pedidos.domain.service;
 
-import com.example.Restaurante.Pedidos.domain.dto.SmsRequest;
 import com.example.Restaurante.Pedidos.persistence.entity.OrderDishEntity;
 import com.example.Restaurante.Pedidos.persistence.entity.OrderEntity;
-import com.example.Restaurante.Usuarios.persistence.entity.UserEntity;
 import com.example.Restaurante.config.error.RestException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +41,7 @@ public interface OrdersService {
             Integer clientId,
             String rolValue
     ) throws RestException;
-    ResponseEntity<Void> sendMessage(SmsRequest smsRequest);
+
     List<OrderEntity>  listOrderClient(
             String orderStateValue,
             Integer clientId,

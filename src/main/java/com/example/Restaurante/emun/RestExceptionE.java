@@ -18,6 +18,13 @@ public enum RestExceptionE {
     ERROR_ORDER_DISH_NOT_SAME_RESTAURANT(1012, HttpStatus.BAD_REQUEST, "Dish.not.same.restaurant"),
     ERROR_ORDER_DUPLICATE_DISH(1013, HttpStatus.BAD_REQUEST, "Order.duplicate.dish"),
     ERROR_ORDER_STATE_NOT_EXIST(1014, HttpStatus.BAD_REQUEST, "Order.state.not.exist"),
+    ERROR_ORDER_NOT_EXIST(1015, HttpStatus.BAD_REQUEST, "Order.not.exist"),
+    ERROR_ORDER_EMPLOYEE_NOT_SAME_RESTAURANT(1016, HttpStatus.BAD_REQUEST, "Employee.not.same.restaurant"),
+    ERROR_ORDER_NOT_PENDING(1017, HttpStatus.BAD_REQUEST, "Order.not.pending"),
+    ERROR_ORDER_NOT_PREPARING(1018, HttpStatus.BAD_REQUEST, "Order.not.preparing"),
+    ERROR_ORDER_NOT_FINISH(1019, HttpStatus.BAD_REQUEST, "Order.not.finish"),
+    ERROR_ORDER_CANCEL(1020, HttpStatus.BAD_REQUEST, "Order.cancel"),
+    ERROR_SEND_SMS(1021, HttpStatus.BAD_REQUEST, "Order.not.send.SMS"),
     UNAUTHORIZED(4001, HttpStatus.UNAUTHORIZED, "User.unauthorized"),
     ;
 

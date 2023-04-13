@@ -59,12 +59,11 @@ public class OrdersController implements OrdersAPI {
     @Override
     public ResponseEntity<Void> prepareOrderEmployee(Integer orderId) throws RestException {
         UserDetailsImpl userDetails = utils.getUserInfo();
-        ordersService.prepareOrderEmployee(
+        return ordersService.prepareOrderEmployee(
                 orderId,
                 userDetails.getId(),
                 userDetails.getRol().getValue()
         );
-        return null;
     }
 
     @Override
