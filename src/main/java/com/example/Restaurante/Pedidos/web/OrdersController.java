@@ -99,15 +99,16 @@ public class OrdersController implements OrdersAPI {
     }
 
     @Override
-    public ResponseEntity<ListOrdersDTO> listOrderClient(String orderStateValue, Pageable pageable) throws RestException {
+    public ResponseEntity<List<ListOrdersDTO>> listOrderClient(String orderStateValue, Pageable pageable) throws RestException {
         UserDetailsImpl userDetails = utils.getUserInfo();
-        ordersService.listOrderClient(
+        List<OrderEntity> orders = ordersService.listOrderClient(
                 orderStateValue,
                 userDetails.getId(),
                 userDetails.getRol().getValue(),
                 pageable
         );
-        return null;
+        List<ListOrdersDTO> ordersDTOS = OrderEntityToOrdersDTO.INSTANCE.listOderEntityToListOrdersDTO(orders);
+        return ResponseEntity.ok().body(ordersDTOS);
     }
 
 

@@ -175,17 +175,17 @@ public class OrdersServiceImpl implements OrdersService{
 
         if(orderState.getValue().equals(OrderStateE.PENDING_ORDER.getValue())
                 || orderState.getValue().equals(OrderStateE.CANCEL_ORDER.getValue())){
-            ordersPaged = orderRepository.findOrderEntityByStateIdAndRestaurantId(
+            ordersPaged = orderRepository.findOrderEntityByStateIdAndRestaurantIdOrderByState(
                     orderState.getId(), restaurantId, pageable);
         }
         else{
-            ordersPaged = orderRepository.findOrderEntityByStateIdAndChefId(orderState.getId(), employeeId, pageable);
+            ordersPaged = orderRepository.findOrderEntityByStateIdAndChefIdOrderByState(orderState.getId(), employeeId, pageable);
         }
         return ordersPaged.getContent();
     }
 
     private List<OrderEntity> listOrderWithOutStateFilter(Integer restaurantId, Pageable pageable) throws RestException {
-        Page<OrderEntity> ordersPaged = orderRepository.findOrderEntityByRestaurantId(restaurantId, pageable);
+        Page<OrderEntity> ordersPaged = orderRepository.findOrderEntityByRestaurantIdOrderByState(restaurantId, pageable);
         return ordersPaged.getContent();
     }
 
@@ -289,7 +289,7 @@ public class OrdersServiceImpl implements OrdersService{
 
     @Override
     public ResponseEntity<Void> cancelOrderClient(Integer orderId, Integer clientId, String rolValue) throws RestException {
-        utils.validateCreatingRol(rolValue, RolE.EMPLOYEE_VALUE);
+        utils.validateCreatingRol(rolValue, RolE.CLIENT_VALUE);
         Optional<OrderEntity> orderDb = orderRepository.findOrderEntityById(orderId);
         if(orderDb.isEmpty()){
             throw new RestException(RestExceptionE.ERROR_ORDER_NOT_EXIST);
@@ -304,17 +304,17 @@ public class OrdersServiceImpl implements OrdersService{
     public List<OrderEntity> listOrderClient(String orderStateValue, Integer clientId, String rolValue, Pageable pageable) throws RestException {
         Page<OrderEntity> ordersPaged;
         utils.validateCreatingRol(rolValue, RolE.CLIENT_VALUE);
-        Optional<OrderStateEntity> orderStateO = orderStateRepository.findOrderStateEntityByValue(orderStateValue);
-        if(orderStateO.isEmpty()){
-            throw new RestException(RestExceptionE.ERROR_ORDER_STATE_NOT_EXIST);
-        }
-        OrderStateEntity orderState = orderStateO.get();
 
         if(orderStateValue != null){
-            ordersPaged = orderRepository.findOrderEntityByStateIdAndClientId(orderState.getId(), clientId, pageable);
+            Optional<OrderStateEntity> orderStateO = orderStateRepository.findOrderStateEntityByValue(orderStateValue);
+            if(orderStateO.isEmpty()){
+                throw new RestException(RestExceptionE.ERROR_ORDER_STATE_NOT_EXIST);
+            }
+            OrderStateEntity orderState = orderStateO.get();
+            ordersPaged = orderRepository.findOrderEntityByStateIdAndClientIdOrderByState(orderState.getId(), clientId, pageable);
         }
         else{
-            ordersPaged = orderRepository.findOrderEntityByClientId(clientId, pageable);
+            ordersPaged = orderRepository.findOrderEntityByClientIdOrderByState(clientId, pageable);
         }
         return ordersPaged.getContent();
     }

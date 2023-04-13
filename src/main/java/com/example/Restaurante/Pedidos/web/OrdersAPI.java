@@ -49,7 +49,7 @@ public interface OrdersAPI {
     ) throws RestException;
 
     @GetMapping(value = "/client")
-    ResponseEntity<ListOrdersDTO> listOrderClient(
+    ResponseEntity<List<ListOrdersDTO>> listOrderClient(
             @RequestParam(required = false) String orderStateValue,
             Pageable pageable
     ) throws RestException;

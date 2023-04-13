@@ -14,22 +14,22 @@ import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<OrderEntity, Integer> {
 
-    Page<OrderEntity> findOrderEntityByStateIdAndRestaurantId(
+    Page<OrderEntity> findOrderEntityByStateIdAndRestaurantIdOrderByState(
             Integer stateId,
             Integer restaurantId,
             Pageable pageable);
-    Page<OrderEntity> findOrderEntityByStateIdAndChefId(
+    Page<OrderEntity> findOrderEntityByStateIdAndChefIdOrderByState(
             Integer stateId,
             Integer chefId,
             Pageable pageable);
-    Page<OrderEntity> findOrderEntityByRestaurantId(
+    Page<OrderEntity> findOrderEntityByRestaurantIdOrderByState(
             Integer restaurantId,
             Pageable pageable);
-    Page<OrderEntity> findOrderEntityByStateIdAndClientId(
+    Page<OrderEntity> findOrderEntityByStateIdAndClientIdOrderByState(
             Integer stateId,
             Integer clientId,
             Pageable pageable);
-    Page<OrderEntity> findOrderEntityByClientId(
+    Page<OrderEntity> findOrderEntityByClientIdOrderByState(
             Integer clientId,
             Pageable pageable);
 
