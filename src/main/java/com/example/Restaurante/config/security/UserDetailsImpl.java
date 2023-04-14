@@ -1,7 +1,7 @@
 package com.example.Restaurante.config.security;
 
-import com.example.Restaurante.Usuarios.persistence.entity.RolEntity;
-import com.example.Restaurante.Usuarios.persistence.entity.UserEntity;
+import com.example.Restaurante.usuarios.persistence.entity.RolEntity;
+import com.example.Restaurante.usuarios.persistence.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
