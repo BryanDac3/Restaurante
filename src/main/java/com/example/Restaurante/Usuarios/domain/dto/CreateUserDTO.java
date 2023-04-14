@@ -1,8 +1,10 @@
 package com.example.Restaurante.Usuarios.domain.dto;
 
+import jdk.jfr.Description;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.management.DescriptorKey;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 
@@ -22,7 +24,7 @@ public class CreateUserDTO implements Serializable {
     private String userDNI;
 
     @NotBlank
-    @Pattern(regexp = "(\\+[0-9]{2})+[0-9]{10}$")
+    @Pattern(regexp = "(\\+[0-9]{2})+[0-9]{10}$", flags = Pattern.Flag.COMMENTS)
     private String cellNumber;
 
     @NotBlank

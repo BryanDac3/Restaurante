@@ -29,7 +29,12 @@ public class WebSecurityConfig {
 
         return http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/users/createClient")
+                .antMatchers(
+                        "/users/createClient",
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/v3/api-docs.yaml")
                 .not()
                 .authenticated()
                 .anyRequest()
