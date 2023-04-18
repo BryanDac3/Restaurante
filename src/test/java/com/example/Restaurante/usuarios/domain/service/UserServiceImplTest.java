@@ -85,7 +85,7 @@ class UserServiceImplTest {
         RestException exception = assertThrows(RestException.class, () ->{
             userService.createEmployee(user, userId, userRol);
         });
-        assertEquals("Onwer.not.restaurant", exception.getInfo().getMessage());
+        assertEquals("Owner.not.restaurant", exception.getInfo().getMessage());
     }
 
     @Test
