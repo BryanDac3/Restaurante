@@ -21,7 +21,7 @@ public interface UserCrudRepository extends JpaRepository<UserEntity, Integer> {
     @Query(value = "INSERT INTO usuarios (NOM_USU, APELLIDOS, DOC_ID, EMAIL, PASS, CEL_USU, ID_ROL)" +
             "VALUES (:name, :lastName, :idNumber, :email, :password, :cell, :idRol)",
             nativeQuery = true)
-    void saveUser(
+    int saveUser(
             @Param("name") String name,
             @Param("lastName") String lastName,
             @Param("idNumber") String idNumber,
